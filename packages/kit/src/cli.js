@@ -92,15 +92,11 @@ prog
 			const server = await vite.createServer(config);
 			await server.listen(port);
 
-			const address_info = /** @type {import('net').AddressInfo} */ (
-				/** @type {import('http').Server} */ (server.httpServer).address()
-			);
-
 			const resolved_config = server.config;
 
 			welcome({
-				port: address_info.port,
-				host: address_info.address,
+				port: Number(resolved_config.server.port),
+				host: String(resolved_config.server.host),
 				https: !!(https || resolved_config.server.https),
 				open: first && (open || !!resolved_config.server.open),
 				base: svelte_config.kit.paths.base,
@@ -298,7 +294,7 @@ function welcome({ port, host, https, open, base, loose, allow, cwd }) {
 
 			// prettier-ignore
 			if (details.internal) {
-				console.log(`  ${colors.gray('local:  ')} ${protocol}//${colors.bold(`localhost:${port}`)}`);
+				console.log(`  ${colors.gray('local:  ')} ${protocol}//${colors.bold(`${host}:${port}`)}`);
 			} else {
 				if (details.mac === '00:00:00:00:00:00') return;
 
